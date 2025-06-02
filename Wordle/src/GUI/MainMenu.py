@@ -3,19 +3,21 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import font
+from src.GUI.ClassicGameWindow import ClassicGameWindow
 
 
 class MainMenu(tk.Frame):
-    def __init__(self, window):
-        super().__init__(window)
+    def __init__(self, master):
+        super().__init__(master)
 
-        self.window = window
+        self.window = master
         self.yellow = "#ECFF49"
         self.green = "#28A645"
 
         f = font.Font(size=20, family="Comic Sans MS", weight="bold")
 
         self.configure(background=self.green)
+
         for i in range(0, 11):
             self.columnconfigure(i, weight=1)
             self.rowconfigure(i, weight=1)
@@ -52,7 +54,10 @@ class MainMenu(tk.Frame):
     def setScene(self, scene=0) -> None:
         match scene:
             case 1:
-                print("Start")
+                for widget in self.winfo_children():
+                    widget.destroy()
+                self.destroy()
+                ClassicGameWindow(master=self.window)
             case 2:
                 print("Options")
             case _:
