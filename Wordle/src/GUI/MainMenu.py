@@ -1,7 +1,4 @@
-import tkinter
 import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
 from tkinter import font
 from src.GUI.ClassicGameWindow import ClassicGameWindow
 
@@ -10,7 +7,7 @@ class MainMenu(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
 
-        self.window = master
+        self.master = master
         self.yellow = "#ECFF49"
         self.green = "#28A645"
 
@@ -57,14 +54,14 @@ class MainMenu(tk.Frame):
                 for widget in self.winfo_children():
                     widget.destroy()
                 self.destroy()
-                ClassicGameWindow(master=self.window)
+                ClassicGameWindow(master=self.master)
             case 2:
                 print("Options")
             case _:
                 for widget in self.winfo_children():
                     widget.destroy()
                 self.destroy()
-                MainMenu2(window=self.window)
+                MainMenu2(window=self.master)
 
 
 class MainMenu2(tk.Frame):
