@@ -10,7 +10,6 @@ if __name__ == "__main__":
     for i in range(0, 11):
         window.rowconfigure(i, weight=1)
         window.columnconfigure(i, weight=1)
-
     MainMenu(window)
     window.mainloop()
 

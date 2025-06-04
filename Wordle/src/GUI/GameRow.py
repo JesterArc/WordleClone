@@ -10,7 +10,6 @@ class GameRow(tk.Frame):
         self.columns = column
         f = font.Font(size=25, family="Comic Sans MS", weight="bold")
         self.cells = dict()
-        self.isCurrentRow = False
         for r in range(0, column):
             self.cells[f"text{r}"] = tk.StringVar()
             self.cells[f"text{r}"].set("")
@@ -35,11 +34,16 @@ class GameRow(tk.Frame):
         for i in range(0, self.columns):
             self.cells[f"text{i}"].set(value[i])
 
+    def setColor(self, cell, color):
+        self.cells[f"cell{cell}"].configure(background=color)
+
 
 class GameRows(tk.Frame):
     def __init__(self, master, rows=6, columns=5):
         super().__init__(master)
         self.master = master
+        self.rows = rows
+        self.columns = columns
 
         for i in range(0, columns):
             self.columnconfigure(i, weight=1)
@@ -51,12 +55,5 @@ class GameRows(tk.Frame):
         for i in range(0, rows):
             self.rows[f"row{i}"] = GameRow(self, column=columns, row=i)
 
-        self.rows["row0"].isCurrentRow = True
-
     def getRow(self, row):
         return self.rows[f"row{row}"]
-
-    def getCurrentRow(self):
-        for key, value in self.rows.items():
-            if value.isCurrentRow:
-                return value
