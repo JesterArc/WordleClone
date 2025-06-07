@@ -5,7 +5,7 @@ from tkinter import messagebox
 
 
 class ClassicGameWindow(tk.Frame):
-    def __init__(self, master: tk.Tk):
+    def __init__(self, master: tk.Tk, hardmode=False, rows=6, columns=5):
         super().__init__(master)
         self.master = master
         master.geometry("620x620")
@@ -23,14 +23,14 @@ class ClassicGameWindow(tk.Frame):
         self.configure(background=self.black)
         self.pack(fill=tk.BOTH, expand=True)
 
-        self.GameRows = GameRows(self)
+        self.GameRows = GameRows(self, columns=columns, rows=rows)
         self.GameRows.grid(row=0, column=1, sticky=tk.N)
 
         self.Keys = dict()
         self.keyboard = self.create_keyboard()
         self.keyboard.grid(row=1, column=0, columnspan=3, sticky=tk.S)
 
-        self.game = Wordle()
+        self.game = Wordle(hardmode=hardmode)
 
     def update_row(self, text):
         row = self.GameRows.getRow(self.game.guessCounter)
@@ -61,6 +61,9 @@ class ClassicGameWindow(tk.Frame):
                 return
             case Validation.NOT_A_WORD:
                 messagebox.showinfo("Not a Word", message=f"Not a Word: {text}")
+                return
+            case Validation.NOT_ALLOWED:
+                messagebox.showinfo("Not Allowed", message=f"{text} doesn't contain required letters")
                 return
         self.apply_colors(row, self.game.rateAnswer(text))
         self.check_win(text)

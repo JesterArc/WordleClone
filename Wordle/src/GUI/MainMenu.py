@@ -35,7 +35,7 @@ class MainMenu(tk.Frame):
         customStartButton = tk.Button(self, name="custom_start", width=10, height=1, text="Custom Mode",
                                       bg="#34DB66", font=f,
                                       fg=self.yellow, activebackground="#34DB66", activeforeground=self.yellow,
-                                      borderwidth=5, relief="ridge", command=lambda: self.setScene(1))
+                                      borderwidth=5, relief="ridge", command=lambda: self.setScene(2))
         customStartButton.grid(column=1, row=6, columnspan=9)
         optionsButton = tk.Button(self, name="options", width=10, height=1, text="Options", bg="#34DB66",
                                   font=f,
@@ -56,7 +56,10 @@ class MainMenu(tk.Frame):
                 self.destroy()
                 ClassicGameWindow(master=self.master)
             case 2:
-                print("Options")
+                for widget in self.winfo_children():
+                    widget.destroy()
+                self.destroy()
+                ClassicGameWindow(master=self.master, hardmode=True, rows=7, columns=5)
             case _:
                 for widget in self.winfo_children():
                     widget.destroy()

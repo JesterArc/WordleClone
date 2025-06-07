@@ -13,25 +13,45 @@ class Validation(Enum):
     TOO_SHORT = 0
     NOT_A_WORD = 1
     ALLOWED = 2
+    NOT_ALLOWED = 3
 
 
 class Wordle:
-    def __init__(self, length=5):
+    def __init__(self, length=5, hardmode=False):
         self.wordList = getWords(length)
         self.length = length
         self.secretWord = self.chooseRandomWord()
         self.guessCounter = 0
+        self.hardMode = hardmode
+        self.answerRequirement = ['' for _ in range(length)]
+        self.requiredLetters = set()
+        print(self.secretWord)
 
     def chooseRandomWord(self):
         return r.choice(self.wordList)
 
     def verifyWord(self, word):
-        if len(word) != self.length:
-            return Validation.TOO_SHORT
-        elif self.length != 5 or word in self.wordList:
-            return Validation.ALLOWED
-        else:
-            return Validation.NOT_A_WORD
+        match self.hardMode:
+            case False:
+                if len(word) != self.length:
+                    return Validation.TOO_SHORT
+                elif self.length != 5 or word in self.wordList:
+                    return Validation.ALLOWED
+                else:
+                    return Validation.NOT_A_WORD
+            case True:
+                if len(word) != self.length:
+                    return Validation.TOO_SHORT
+                if self.length == 5 and word not in self.wordList:
+                    return Validation.NOT_A_WORD
+                letters = mark_repetitions(word)
+                for letter in self.requiredLetters:
+                    if letter not in letters:
+                        return Validation.NOT_ALLOWED
+                for pos in range(self.length):
+                    if self.answerRequirement[pos] != '' and self.answerRequirement[pos] != letters[pos]:
+                        return Validation.NOT_ALLOWED
+                return Validation.ALLOWED
 
     def rateAnswer(self, guess):
         # Mark the correct guesses
@@ -39,14 +59,20 @@ class Wordle:
         # Mark partially correct guesses
         comparator_guess, comparator_answer = mark_repetitions(comparator_guess), mark_repetitions(comparator_answer)
         rating = []
+        forHardLetters = mark_repetitions(guess)
         for pos, letter in enumerate(comparator_guess):
             if letter == comparator_answer[pos]:
                 rating.append((Rating.CORRECT, guess[pos]))
+                self.answerRequirement[pos] = guess[pos]
+                self.requiredLetters.add(forHardLetters[pos])
             elif letter in comparator_answer:
                 rating.append((Rating.EXISTS, guess[pos]))
+                self.requiredLetters.add(forHardLetters[pos])
             else:
                 rating.append((Rating.WRONG, guess[pos]))
         self.guessCounter += 1
+        print(self.answerRequirement)
+        print(self.requiredLetters)
         return rating
 
 
