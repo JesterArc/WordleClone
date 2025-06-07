@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import font
-from src.GUI.ClassicGameWindow import ClassicGameWindow
+from ..GUI import ClassicGameWindow
 
 
 class MainMenu(tk.Frame):

@@ -2,6 +2,27 @@ import tkinter as tk
 from tkinter import font
 
 
+class GameRows(tk.Frame):
+    def __init__(self, master, rows=6, columns=5):
+        super().__init__(master)
+        self.master = master
+        self.rows = rows
+        self.columns = columns
+
+        for i in range(0, columns):
+            self.columnconfigure(i, weight=1)
+        for i in range(0, rows):
+            self.rowconfigure(i, weight=1)
+
+        self.rows = dict()
+
+        for i in range(0, rows):
+            self.rows[f"row{i}"] = GameRow(self, column=columns, row=i)
+
+    def getRow(self, row):
+        return self.rows[f"row{row}"]
+
+
 class GameRow(tk.Frame):
     def __init__(self, master, row, column=1):
         super().__init__(master)
@@ -36,24 +57,3 @@ class GameRow(tk.Frame):
 
     def setColor(self, cell, color):
         self.cells[f"cell{cell}"].configure(background=color)
-
-
-class GameRows(tk.Frame):
-    def __init__(self, master, rows=6, columns=5):
-        super().__init__(master)
-        self.master = master
-        self.rows = rows
-        self.columns = columns
-
-        for i in range(0, columns):
-            self.columnconfigure(i, weight=1)
-        for i in range(0, rows):
-            self.rowconfigure(i, weight=1)
-
-        self.rows = dict()
-
-        for i in range(0, rows):
-            self.rows[f"row{i}"] = GameRow(self, column=columns, row=i)
-
-    def getRow(self, row):
-        return self.rows[f"row{row}"]

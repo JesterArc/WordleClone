@@ -1,6 +1,6 @@
 import tkinter as tk
-from src.Logic.WordProvider import chooseRandomWord, rateAnswer, Rating
-from src.GUI.GameRow import GameRows
+from ..Logic import Wordle, Rating, Validation
+from ..GUI import GameRows
 from tkinter import messagebox
 
 
@@ -14,8 +14,6 @@ class ClassicGameWindow(tk.Frame):
         self.black = "#121213"
         self.yellow = "#ECFF49"
         self.green = "#28A645"
-
-        self.wordlist = chooseRandomWord()
 
         self.columnconfigure(0, weight=2)
         self.columnconfigure(1, weight=6)
@@ -32,11 +30,10 @@ class ClassicGameWindow(tk.Frame):
         self.keyboard = self.create_keyboard()
         self.keyboard.grid(row=1, column=0, columnspan=3, sticky=tk.S)
 
-        self.guessCounter = 0
-        self.secretWord = chooseRandomWord()
+        self.game = Wordle()
 
     def update_row(self, text):
-        row = self.GameRows.getRow(self.guessCounter)
+        row = self.GameRows.getRow(self.game.guessCounter)
         if row is None:
             return
         for i in range(0, row.columns):
@@ -46,7 +43,7 @@ class ClassicGameWindow(tk.Frame):
         return
 
     def trunc_row(self):
-        row = self.GameRows.getRow(self.guessCounter)
+        row = self.GameRows.getRow(self.game.guessCounter)
         if row is None:
             return
         for i in range(0, row.columns):
@@ -56,41 +53,42 @@ class ClassicGameWindow(tk.Frame):
         return
 
     def submit_row(self):
-        row = self.GameRows.getRow(self.guessCounter)
-        if row is None:
-            return
+        row = self.GameRows.getRow(self.game.guessCounter)
         text = row.getText()
-        if len(text) != self.GameRows.columns:
-            return
-        rating = rateAnswer(text, self.secretWord)
-        self.guessCounter += 1
-        self.apply_colors(row, rating)
-        if text == self.secretWord:
-            messagebox.showinfo(message=f"You Win!\nYou guessed correctly in {self.guessCounter} guess" +
-                                        ("es!" if self.guessCounter > 1 else "!"), title="Game Over")
+        match self.game.verifyWord(text):
+            case Validation.TOO_SHORT:
+                messagebox.showinfo("Too Short", message=f"Too Short: {text}")
+                return
+            case Validation.NOT_A_WORD:
+                messagebox.showinfo("Not a Word", message=f"Not a Word: {text}")
+                return
+        self.apply_colors(row, self.game.rateAnswer(text))
+        self.check_win(text)
+
+    def check_win(self, text):
+        if text == self.game.secretWord:
+            messagebox.showinfo(message=f"You Win!\nYou guessed correctly in {self.game.guessCounter} guess" +
+                                        ("es!" if self.game.guessCounter > 1 else "!"), title="Game Over")
             for key, value in self.Keys.items():
                 value.configure(state=tk.DISABLED)
             self.focus()
-        elif self.guessCounter > self.GameRows.columns:
-            messagebox.showinfo(message=f"You Lose!\nThe word was {self.secretWord}", title="Game Over")
+        elif self.game.guessCounter > self.GameRows.columns:
+            messagebox.showinfo(message=f"You Lose!\nThe word was {self.game.secretWord}", title="Game Over")
             for key, value in self.Keys.items():
                 value.configure(state=tk.DISABLED)
             self.focus()
 
-    def apply_colors(self, row, rating):
-        for i in range(row.columns):
-            match rating[i][0]:
-                case Rating.WRONG:
-                    row.setColor(i, self.gray)
-                    self.Keys[rating[i][1]].configure(background=self.black)
-                case Rating.EXISTS:
-                    current = row.getCell(i).cget("background")
-                    if current != self.green:
-                        row.setColor(i, self.yellow)
-                        self.Keys[rating[i][1]].configure(background=self.yellow)
+    def apply_colors(self, row, ratingArray):
+        for cell, (rating, letter) in enumerate(ratingArray):
+            match rating:
+                case Rating.WRONG | Rating.EXISTS:
+                    if row.getCell(cell).cget("background") != self.green:
+                        row.setColor(cell, self.gray if rating == Rating.WRONG else self.yellow)
+                    if self.Keys[letter].cget("background") != self.green:
+                        self.Keys[letter].configure(background=self.black if rating == Rating.WRONG else self.yellow)
                 case Rating.CORRECT:
-                    row.setColor(i, self.green)
-                    self.Keys[rating[i][1]].configure(background=self.green)
+                    row.setColor(cell, self.green)
+                    self.Keys[letter].configure(background=self.green)
 
     def key_handler(self, event):
         match event.keycode:
