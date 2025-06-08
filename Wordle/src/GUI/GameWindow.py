@@ -1,14 +1,13 @@
 import tkinter as tk
-from ..Logic import Wordle, Rating, Validation
-from ..GUI import GameRows
 from tkinter import messagebox
+from ..GUI.GameRows import GameRows
+from ..Logic import Wordle, Rating, Validation
 
 
-class ClassicGameWindow(tk.Frame):
+class GameWindow(tk.Frame):
     def __init__(self, master: tk.Tk, hardmode=False, rows=6, columns=5):
         super().__init__(master)
         self.master = master
-        master.geometry("620x620")
 
         self.gray = "#3A3A3C"
         self.black = "#121213"
@@ -30,7 +29,13 @@ class ClassicGameWindow(tk.Frame):
         self.keyboard = self.create_keyboard()
         self.keyboard.grid(row=1, column=0, columnspan=3, sticky=tk.S)
 
-        self.game = Wordle(hardmode=hardmode)
+        self.buttons = self.create_menu_buttons()
+        self.buttons.grid(row=0, column=2, sticky=tk.E)
+
+        self.buttons2 = self.create_menu_buttons2()
+        self.buttons2.grid(row=0, column=0, sticky=tk.W)
+
+        self.game = Wordle(hardmode=hardmode, length=columns)
 
     def update_row(self, text):
         row = self.GameRows.getRow(self.game.guessCounter)
@@ -69,13 +74,14 @@ class ClassicGameWindow(tk.Frame):
         self.check_win(text)
 
     def check_win(self, text):
+        print(self.game.guessCounter, self.GameRows.rowCount)
         if text == self.game.secretWord:
             messagebox.showinfo(message=f"You Win!\nYou guessed correctly in {self.game.guessCounter} guess" +
                                         ("es!" if self.game.guessCounter > 1 else "!"), title="Game Over")
             for key, value in self.Keys.items():
                 value.configure(state=tk.DISABLED)
             self.focus()
-        elif self.game.guessCounter > self.GameRows.columns:
+        elif self.game.guessCounter == self.GameRows.rowCount:
             messagebox.showinfo(message=f"You Lose!\nThe word was {self.game.secretWord}", title="Game Over")
             for key, value in self.Keys.items():
                 value.configure(state=tk.DISABLED)
@@ -133,3 +139,26 @@ class ClassicGameWindow(tk.Frame):
         keyboard.configure(bg=self.black)
 
         return keyboard
+
+    def create_menu_buttons(self):
+        buttons = tk.Frame(self)
+        buttons.configure(bg=self.black)
+        button = tk.Button(buttons, width=5, height=2, command=lambda: self.back_to_main_menu())
+        button.grid(row=0, column=2)
+
+        return buttons
+
+    def create_menu_buttons2(self):
+        buttons = tk.Frame(self)
+        buttons.configure(bg=self.black)
+        button = tk.Button(buttons, width=5, height=2, command=lambda: self.back_to_main_menu())
+        button.grid(row=0, column=2)
+
+        return buttons
+
+    def back_to_main_menu(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+        self.destroy()
+        from src.GUI.MainMenu import MainMenu
+        MainMenu(self.master)

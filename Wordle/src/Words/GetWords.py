@@ -9,7 +9,7 @@ def getWords(length: int) -> list:
     else:
         try:
             return [word.strip("\n").upper()
-                    for word in open("src/Words/10kMostCommonWords.txt", "r").readlines() if len(word) == length]
+                    for word in open("src/Words/10kMostCommonWords.txt", "r").readlines() if len(word) == length + 1]
         except FileNotFoundError:
             return [word.strip("\n").upper()
-                    for word in open("Words/10kMostCommonWords.txt", "r").readlines() if len(word) == length]
+                    for word in open("Words/10kMostCommonWords.txt", "r").readlines() if len(word) == length + 1]

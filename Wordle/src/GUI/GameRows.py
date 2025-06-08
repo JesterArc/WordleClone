@@ -6,8 +6,8 @@ class GameRows(tk.Frame):
     def __init__(self, master, rows=6, columns=5):
         super().__init__(master)
         self.master = master
-        self.rows = rows
-        self.columns = columns
+        self.rowCount = rows
+        self.columnCount = columns
 
         for i in range(0, columns):
             self.columnconfigure(i, weight=1)

@@ -49,7 +49,7 @@ class Wordle:
                     if letter not in letters:
                         return Validation.NOT_ALLOWED
                 for pos in range(self.length):
-                    if self.answerRequirement[pos] != '' and self.answerRequirement[pos] != letters[pos]:
+                    if self.answerRequirement[pos] != '' and self.answerRequirement[pos] != word[pos]:
                         return Validation.NOT_ALLOWED
                 return Validation.ALLOWED
 

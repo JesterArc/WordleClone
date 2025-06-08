@@ -1,4 +1,5 @@
 from .GameRows import GameRows
-from .ClassicGameWindow import ClassicGameWindow
+from .GameWindow import GameWindow
 from .MainMenu import MainMenu
+from .CustomizeGame import CustomizeGame
 
