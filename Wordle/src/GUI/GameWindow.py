@@ -1,12 +1,13 @@
 import tkinter as tk
 from tkinter import messagebox
 from ..GUI.GameRows import GameRows
+from ..GUI.RunHistory import add_run
 from ..Logic import Wordle, Rating, Validation
 from .FrameTraveler import FrameTraveler
 
 
 class GameWindow(FrameTraveler):
-    def __init__(self, master: tk.Tk, hardmode=False, rows=6, columns=5):
+    def __init__(self, master: tk.Tk, hardmode=False, rows=6, columns=5, history=False, replay=list):
         super().__init__(master)
         self.master = master
 
@@ -27,20 +28,29 @@ class GameWindow(FrameTraveler):
         self.configure(background=self.black)
         self.pack(fill=tk.BOTH, expand=True)
 
-        self.GameRows = GameRows(self, columns=columns, rows=rows)
+        self.GameRows = GameRows(self, columns=self.columns, rows=self.rows)
         self.GameRows.grid(row=0, column=1, sticky=tk.N)
 
         self.Keys = dict()
         self.keyboard = self.create_keyboard()
         self.keyboard.grid(row=1, column=0, columnspan=3, sticky=tk.S)
 
-        self.buttons = self.create_menu_button()
-        self.buttons.grid(row=0, column=2, sticky=tk.NE)
+        self.mainMenuButton = self.create_menu_button()
+        self.mainMenuButton.grid(row=0, column=2, sticky=tk.NE)
 
-        self.buttons2 = self.create_restart_button()
-        self.buttons2.grid(row=0, column=0, sticky=tk.NW)
+        self.restartButton = self.create_restart_button()
+        self.restartButton.grid(row=0, column=0, sticky=tk.NW)
 
         self.game = Wordle(hardmode=hardmode, length=columns)
+
+        if history:
+            for key, value in self.Keys.items():
+                value.configure(state=tk.DISABLED)
+            self.focus()
+            self.GameRows.unpack(replay)
+            self.restartButton.destroy()
+            self.restartButton = self.create_history_button()
+            self.restartButton.grid(row=0, column=0, sticky=tk.NW)
 
     def update_row(self, text):
         row = self.GameRows.getRow(self.game.guessCounter)
@@ -79,17 +89,20 @@ class GameWindow(FrameTraveler):
         self.check_win(text)
 
     def check_win(self, text):
-        print(self.game.guessCounter, self.GameRows.rowCount)
         if text == self.game.secretWord:
             messagebox.showinfo(message=f"You Win!\nYou guessed correctly in {self.game.guessCounter} guess" +
                                         ("es!" if self.game.guessCounter > 1 else "!"), title="Game Over")
             for key, value in self.Keys.items():
                 value.configure(state=tk.DISABLED)
+            add_run(result="WIN", word=self.game.secretWord, guesses=self.game.guessCounter,
+                    replay=self.GameRows.pack())
             self.focus()
+
         elif self.game.guessCounter == self.GameRows.rowCount:
             messagebox.showinfo(message=f"You Lose!\nThe word was {self.game.secretWord}", title="Game Over")
             for key, value in self.Keys.items():
                 value.configure(state=tk.DISABLED)
+            add_run(result="LOSS", word=self.game.secretWord, replay=self.GameRows.pack())
             self.focus()
 
     def apply_colors(self, row, ratingArray):
@@ -164,6 +177,17 @@ class GameWindow(FrameTraveler):
                            fg='white', bg=self.gray, activebackground=self.gray, activeforeground='white',
                            command=lambda: self.go_to_game_window(rows=self.rows, columns=self.columns,
                                                                   hardmode=self.hardmode))
+        button.grid()
+
+        return buttons
+
+    def create_history_button(self):
+        buttons = tk.Frame(self)
+        buttons.configure(bg=self.black)
+        font = tk.font.Font(family="Comic Sans MS", size=15, weight="bold")
+        button = tk.Button(buttons, text="History", font=font, width=10, height=2,
+                           fg='white', bg=self.gray, activebackground=self.gray, activeforeground='white',
+                           command=lambda: self.go_to_run_history())
         button.grid()
 
         return buttons

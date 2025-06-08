@@ -37,11 +37,10 @@ class MainMenu(FrameTraveler):
                                       fg=self.yellow, activebackground="#34DB66", activeforeground=self.yellow,
                                       borderwidth=5, relief="ridge", command=lambda: self.go_to_customize_window())
         customStartButton.grid(column=1, row=6, columnspan=9)
-        #TODO: create run history page
         historyButton = tk.Button(self, name="runhistory", width=12, height=1, text="Run History", bg="#34DB66",
                                   font=f,
                                   fg=self.yellow, activebackground="#34DB66", activeforeground=self.yellow,
-                                  borderwidth=5, relief="ridge", command=lambda: self.exit_game())
+                                  borderwidth=5, relief="ridge", command=lambda: self.go_to_run_history())
         historyButton.grid(column=1, row=8, columnspan=9)
         exitButton = tk.Button(self, name="exit", width=12, height=1, text="Exit", bg="#34DB66", font=f,
                                fg=self.yellow,

@@ -1,5 +1,4 @@
 import random as r
-from ..Words import getWords
 from enum import Enum
 
 
@@ -105,3 +104,20 @@ def mark_repetitions(word) -> list:
         else:
             count_repetitions[letter] += 1
     return letters
+
+
+def getWords(length: int) -> list:
+    if length < 1:
+        raise ValueError("Length must be greater than or equal to 1.")
+    elif length == 5:
+        try:
+            return [word.strip("\n").upper() for word in open("src/Text/5letterWords.txt", "r").readlines()]
+        except FileNotFoundError:
+            return [word.strip("\n").upper() for word in open("Text/5letterWords.txt", "r").readlines()]
+    else:
+        try:
+            return [word.strip("\n").upper()
+                    for word in open("src/Text/10kMostCommonWords.txt", "r").readlines() if len(word) == length + 1]
+        except FileNotFoundError:
+            return [word.strip("\n").upper()
+                    for word in open("Text/10kMostCommonWords.txt", "r").readlines() if len(word) == length + 1]

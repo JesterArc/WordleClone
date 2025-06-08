@@ -1,1 +1,0 @@
-from .GetWords import getWords

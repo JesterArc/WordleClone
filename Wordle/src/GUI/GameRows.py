@@ -9,9 +9,9 @@ class GameRows(tk.Frame):
         self.rowCount = rows
         self.columnCount = columns
 
-        for i in range(0, columns):
+        for i in range(0, self.columnCount):
             self.columnconfigure(i, weight=1)
-        for i in range(0, rows):
+        for i in range(0, self.rowCount):
             self.rowconfigure(i, weight=1)
 
         self.rows = dict()
@@ -21,6 +21,24 @@ class GameRows(tk.Frame):
 
     def getRow(self, row):
         return self.rows[f"row{row}"]
+
+    def pack(self):
+        text = list("" for _ in range(self.rowCount))
+        for i in range(self.rowCount):
+            row = self.getRow(i)
+            for j in range(self.columnCount):
+                text[i] += f"{row.getCell(j)['background']}_{row.getCell(j)['text']} "
+            text[i] = text[i][:-1]
+        return text
+
+    def unpack(self, preset):
+        for pos, row in enumerate(preset):
+            text = row.split(" ")
+            for val in range(len(text)):
+                text[val] = text[val].split("_")
+            for i in range(0, self.columnCount):
+                self.getRow(pos).setCellText(i, text[i][1])
+                self.getRow(pos).getCell(i).configure(background=text[i][0])
 
 
 class GameRow(tk.Frame):
@@ -51,9 +69,9 @@ class GameRow(tk.Frame):
     def getText(self):
         return ''.join([self.cells[f"text{i}"].get() for i in range(0, self.columns)])
 
-    def setText(self, value):
+    def setText(self, text):
         for i in range(0, self.columns):
-            self.cells[f"text{i}"].set(value[i])
+            self.cells[f"text{i}"].set(text[i])
 
     def setColor(self, cell, color):
         self.cells[f"cell{cell}"].configure(background=color)
