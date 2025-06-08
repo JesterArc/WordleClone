@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, font
+from tkinter import ttk, font, messagebox
 
 
 # 3 - 10
@@ -51,38 +51,48 @@ class CustomizeGame(tk.Frame):
             frame.columnconfigure(i, weight=1)
             frame.rowconfigure(i, weight=1)
 
-        frame.mainMenuButton = tk.Button(frame, text="Back To Main Menu", bg=self.light_green, fg=self.yellow,
-                                         font=self.f, command=lambda:self.back_to_main_menu(),
-                                         activebackground=self.light_green, activeforeground=self.yellow)
-        frame.mainMenuButton.grid(column=1, row=0, columnspan=3)
+        mainMenuButton = tk.Button(frame, width=20, text="Back To Main Menu", bg=self.light_green, fg=self.yellow,
+                                   font=self.f, command=lambda: self.back_to_main_menu(),
+                                   activebackground=self.light_green, activeforeground=self.yellow)
+        mainMenuButton.grid(column=1, row=0, columnspan=3)
 
-        frame.wordLengthLabel = tk.Label(frame, text="Word Length:", font=self.f, bg=self.light_green, fg=self.yellow,
-                                         relief="raised")
-        frame.wordLength = ttk.Combobox(frame, textvariable=self.columns, width=2,
-                                        font=self.f, values=sizes, state="readonly")
-        frame.wordLength.current(2)
-        frame.wordLengthLabel.grid(column=1, row=1)
-        frame.wordLength.grid(column=2, row=1)
+        wordLengthLabel = tk.Label(frame, width=15, text="Word Length:", font=self.f, bg=self.light_green,
+                                   fg=self.yellow, relief="raised")
+        wordLength = ttk.Combobox(frame, textvariable=self.columns, width=5, justify='center',
+                                  font=self.f, values=sizes, state="readonly")
+        wordLength.current(2)
+        wordLengthLabel.grid(column=1, row=1)
+        wordLength.grid(column=2, row=1)
 
-        frame.triesLabel = tk.Label(frame, text="How Many Tries:", font=self.f, bg=self.light_green, fg=self.yellow,
-                                    relief="raised")
-        frame.tries = ttk.Combobox(frame, textvariable=self.rows, width=2,
-                                   font=self.f, state="readonly", values=attempts)
-        frame.tries.current(3)
-        frame.triesLabel.grid(column=1, row=2)
-        frame.tries.grid(column=2, row=2)
+        triesLabel = tk.Label(frame, width=15, text="How Many Tries:", font=self.f, bg=self.light_green,
+                              fg=self.yellow, relief="raised")
+        tries = ttk.Combobox(frame, textvariable=self.rows, width=5, justify='center',
+                             font=self.f, state="readonly", values=attempts)
+        tries.current(3)
+        triesLabel.grid(column=1, row=2)
+        tries.grid(column=2, row=2)
 
-        frame.hardmodeLabel = tk.Label(frame, text="Hard Mode:", font=self.f, bg=self.light_green, fg=self.yellow,
-                                       relief="raised")
-        frame.hardmode = ttk.Combobox(frame, textvariable=self.hardMode, width=4,
-                                      font=self.f, state="readonly", values=enableHardMode)
-        frame.hardmode.current(1)
-        frame.hardmodeLabel.grid(column=1, row=3)
-        frame.hardmode.grid(column=2, row=3)
+        hardmodeLabel = tk.Label(frame, width=15, text="Hard Mode:", font=self.f, bg=self.light_green,
+                                 fg=self.yellow, relief="raised")
+        hardmode = ttk.Combobox(frame, textvariable=self.hardMode, width=5, justify='center',
+                                font=self.f, state="readonly", values=enableHardMode)
+        hardmode.current(1)
+        hardmodeLabel.grid(column=1, row=3)
+        hardmode.grid(column=2, row=3)
 
-        sendButton = tk.Button(frame, text="Start Game", bg=self.light_green, fg=self.yellow,
+        hardmodeTooltip = tk.Button(frame, text="i", width=3,
+                                    font=font.Font(size=10, family="Comic Sans MS", weight="bold"),
+                                    bg=self.light_green, fg=self.yellow, activebackground=self.light_green,
+                                    activeforeground=self.yellow, relief="ridge",
+                                    command=lambda: tk.messagebox.showinfo(title="Hard Mode Explained",
+                                    message="Any revealed hints must be used in subsequent guesses"
+                                            "\nIf a letter is marked yellow, you must include it somewhere"
+                                            "\nIf a letter is marked green, it must be in that spot"))
+        hardmodeTooltip.grid(column=3, row=3)
+
+        sendButton = tk.Button(frame, width=20, text="Start Game", bg=self.light_green, fg=self.yellow,
                                font=self.f, command=lambda: self.start_game(),
-                                activebackground=self.light_green, activeforeground=self.yellow)
+                               activebackground=self.light_green, activeforeground=self.yellow)
         sendButton.grid(column=1, row=4, columnspan=3)
         return frame
 

@@ -14,6 +14,10 @@ class GameWindow(tk.Frame):
         self.yellow = "#ECFF49"
         self.green = "#28A645"
 
+        self.hardmode = hardmode
+        self.rows = rows
+        self.columns = columns
+
         self.columnconfigure(0, weight=2)
         self.columnconfigure(1, weight=6)
         self.columnconfigure(2, weight=2)
@@ -29,11 +33,11 @@ class GameWindow(tk.Frame):
         self.keyboard = self.create_keyboard()
         self.keyboard.grid(row=1, column=0, columnspan=3, sticky=tk.S)
 
-        self.buttons = self.create_menu_buttons()
-        self.buttons.grid(row=0, column=2, sticky=tk.E)
+        self.buttons = self.create_menu_button()
+        self.buttons.grid(row=0, column=2, sticky=tk.NE)
 
-        self.buttons2 = self.create_menu_buttons2()
-        self.buttons2.grid(row=0, column=0, sticky=tk.W)
+        self.buttons2 = self.create_restart_button()
+        self.buttons2.grid(row=0, column=0, sticky=tk.NW)
 
         self.game = Wordle(hardmode=hardmode, length=columns)
 
@@ -62,13 +66,13 @@ class GameWindow(tk.Frame):
         text = row.getText()
         match self.game.verifyWord(text):
             case Validation.TOO_SHORT:
-                messagebox.showinfo("Too Short", message=f"Too Short: {text}")
+                messagebox.showerror("Too Short", message=f"Too Short: {text}")
                 return
             case Validation.NOT_A_WORD:
-                messagebox.showinfo("Not a Word", message=f"Not a Word: {text}")
+                messagebox.showerror("Not a Word", message=f"Not a Word: {text}")
                 return
             case Validation.NOT_ALLOWED:
-                messagebox.showinfo("Not Allowed", message=f"{text} doesn't contain required letters")
+                messagebox.showerror("Not Allowed", message=f"{text} doesn't contain required letters")
                 return
         self.apply_colors(row, self.game.rateAnswer(text))
         self.check_win(text)
@@ -140,19 +144,25 @@ class GameWindow(tk.Frame):
 
         return keyboard
 
-    def create_menu_buttons(self):
+    def create_menu_button(self):
         buttons = tk.Frame(self)
         buttons.configure(bg=self.black)
-        button = tk.Button(buttons, width=5, height=2, command=lambda: self.back_to_main_menu())
-        button.grid(row=0, column=2)
+        font = tk.font.Font(family="Comic Sans MS", size=15, weight="bold")
+        button = tk.Button(buttons, text="Main Menu", font=font, width=10, height=2,
+                           fg='white', bg=self.gray, activebackground=self.gray, activeforeground='white',
+                           command=lambda: self.back_to_main_menu())
+        button.grid()
 
         return buttons
 
-    def create_menu_buttons2(self):
+    def create_restart_button(self):
         buttons = tk.Frame(self)
         buttons.configure(bg=self.black)
-        button = tk.Button(buttons, width=5, height=2, command=lambda: self.back_to_main_menu())
-        button.grid(row=0, column=2)
+        font = tk.font.Font(family="Comic Sans MS", size=15, weight="bold")
+        button = tk.Button(buttons, text="Restart", font=font, width=10, height=2,
+                           fg='white', bg=self.gray, activebackground=self.gray, activeforeground='white',
+                           command=lambda: self.restart())
+        button.grid()
 
         return buttons
 
@@ -162,3 +172,9 @@ class GameWindow(tk.Frame):
         self.destroy()
         from src.GUI.MainMenu import MainMenu
         MainMenu(self.master)
+
+    def restart(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+        self.destroy()
+        GameWindow(self.master, hardmode=self.hardmode, rows=self.rows, columns=self.columns)
