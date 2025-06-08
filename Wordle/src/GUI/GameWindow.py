@@ -2,9 +2,10 @@ import tkinter as tk
 from tkinter import messagebox
 from ..GUI.GameRows import GameRows
 from ..Logic import Wordle, Rating, Validation
+from .FrameTraveler import FrameTraveler
 
 
-class GameWindow(tk.Frame):
+class GameWindow(FrameTraveler):
     def __init__(self, master: tk.Tk, hardmode=False, rows=6, columns=5):
         super().__init__(master)
         self.master = master
@@ -150,7 +151,7 @@ class GameWindow(tk.Frame):
         font = tk.font.Font(family="Comic Sans MS", size=15, weight="bold")
         button = tk.Button(buttons, text="Main Menu", font=font, width=10, height=2,
                            fg='white', bg=self.gray, activebackground=self.gray, activeforeground='white',
-                           command=lambda: self.back_to_main_menu())
+                           command=lambda: self.go_to_main_menu())
         button.grid()
 
         return buttons
@@ -161,20 +162,8 @@ class GameWindow(tk.Frame):
         font = tk.font.Font(family="Comic Sans MS", size=15, weight="bold")
         button = tk.Button(buttons, text="Restart", font=font, width=10, height=2,
                            fg='white', bg=self.gray, activebackground=self.gray, activeforeground='white',
-                           command=lambda: self.restart())
+                           command=lambda: self.go_to_game_window(rows=self.rows, columns=self.columns,
+                                                                  hardmode=self.hardmode))
         button.grid()
 
         return buttons
-
-    def back_to_main_menu(self):
-        for widget in self.winfo_children():
-            widget.destroy()
-        self.destroy()
-        from src.GUI.MainMenu import MainMenu
-        MainMenu(self.master)
-
-    def restart(self):
-        for widget in self.winfo_children():
-            widget.destroy()
-        self.destroy()
-        GameWindow(self.master, hardmode=self.hardmode, rows=self.rows, columns=self.columns)

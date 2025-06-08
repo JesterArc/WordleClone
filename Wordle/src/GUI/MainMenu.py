@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import font
+from .FrameTraveler import FrameTraveler
 
 
-class MainMenu(tk.Frame):
+class MainMenu(FrameTraveler):
     def __init__(self, master: tk.Tk):
         super().__init__(master)
         self.master = master
@@ -29,42 +30,21 @@ class MainMenu(tk.Frame):
         startButton = tk.Button(self, name="classic_start", width=12, height=1, text="Classic Mode",
                                 bg="#34DB66", font=f,
                                 fg=self.yellow, activebackground="#34DB66", activeforeground=self.yellow, borderwidth=5,
-                                relief="ridge", command=lambda: self.setScene(1))
+                                relief="ridge", command=lambda: self.go_to_game_window())
         startButton.grid(column=1, row=4, columnspan=9)
         customStartButton = tk.Button(self, name="custom_start", width=12, height=1, text="Custom Mode",
                                       bg="#34DB66", font=f,
                                       fg=self.yellow, activebackground="#34DB66", activeforeground=self.yellow,
-                                      borderwidth=5, relief="ridge", command=lambda: self.setScene(2))
+                                      borderwidth=5, relief="ridge", command=lambda: self.go_to_customize_window())
         customStartButton.grid(column=1, row=6, columnspan=9)
+        #TODO: create run history page
         historyButton = tk.Button(self, name="runhistory", width=12, height=1, text="Run History", bg="#34DB66",
                                   font=f,
                                   fg=self.yellow, activebackground="#34DB66", activeforeground=self.yellow,
-                                  borderwidth=5, relief="ridge", command=lambda: self.setScene(3))
+                                  borderwidth=5, relief="ridge", command=lambda: self.exit_game())
         historyButton.grid(column=1, row=8, columnspan=9)
         exitButton = tk.Button(self, name="exit", width=12, height=1, text="Exit", bg="#34DB66", font=f,
                                fg=self.yellow,
                                activebackground="#34DB66", activeforeground=self.yellow, borderwidth=5, relief="ridge",
-                               command=lambda: self.setScene())
+                               command=lambda: self.exit_game())
         exitButton.grid(column=1, row=10, columnspan=9)
-
-    def setScene(self, scene=0) -> None:
-        match scene:
-            case 1:
-                for widget in self.winfo_children():
-                    widget.destroy()
-                self.destroy()
-                from src.GUI.GameWindow import GameWindow
-                GameWindow(master=self.master)
-            case 2:
-                for widget in self.winfo_children():
-                    widget.destroy()
-                self.destroy()
-                # from src.GUI.GameWindow import GameWindow
-                # GameWindow(master=self.master, hardmode=True, rows=10, columns=10)
-                from src.GUI.CustomizeGame import CustomizeGame
-                CustomizeGame(master=self.master)
-            case _:
-                for widget in self.winfo_children():
-                    widget.destroy()
-                self.destroy()
-                self.master.destroy()
