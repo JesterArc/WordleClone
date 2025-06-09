@@ -94,7 +94,7 @@ class GameWindow(FrameTraveler):
                                         ("es!" if self.game.guessCounter > 1 else "!"), title="Game Over")
             for key, value in self.Keys.items():
                 value.configure(state=tk.DISABLED)
-            add_run(result="WIN", word=self.game.secretWord, guesses=self.game.guessCounter,
+            add_run(result="WIN", word=self.game.secretWord, guesses=self.game.guessCounter, hardmode=self.hardmode,
                     replay=self.GameRows.pack())
             self.focus()
 
@@ -102,7 +102,7 @@ class GameWindow(FrameTraveler):
             messagebox.showinfo(message=f"You Lose!\nThe word was {self.game.secretWord}", title="Game Over")
             for key, value in self.Keys.items():
                 value.configure(state=tk.DISABLED)
-            add_run(result="LOSS", word=self.game.secretWord, replay=self.GameRows.pack())
+            add_run(result="LOSS", word=self.game.secretWord, replay=self.GameRows.pack(), hardmode=self.hardmode)
             self.focus()
 
     def apply_colors(self, row, ratingArray):

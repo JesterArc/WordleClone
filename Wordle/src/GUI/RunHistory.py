@@ -51,20 +51,27 @@ class RunHistory(FrameTraveler):
             if len(run.keys()) == 0:
                 text = ""
                 command = lambda char="a": self.go_to_run_history()
-            elif "guesses" in run.keys():
-                text = f"{run['result']} | {run['word']} | {run['guesses']}"
-                command = lambda char=run["replay"]: self.go_to_game_window(history=True, replay=char)
             else:
-                text = f"{run['result']} | {run['word']}"
-                command = lambda char=run["replay"]: self.go_to_game_window(history=True, replay=char)
-            self.runs[f"run{pos}"] = tk.Button(frame, width=25, text=text, bg=self.gray, fg=self.black,
+                if 'guesses' not in run.keys():
+                    attempts = len(run['replay'])
+                else:
+                    attempts = run['guesses']
+                text = f"{run['result']} | {run['word']} | {attempts} / {len(run['replay'])}"
+                command = lambda var=run: self.go_to_game_window(rows=len(var['replay']),
+                                                                 columns=len(var['word']),
+                                                                 history=True, replay=var['replay'])
+            if "hardmode" not in run.keys() or not run["hardmode"]:
+                color = self.black
+            else:
+                color = self.yellow
+            self.runs[f"run{pos}"] = tk.Button(frame, width=25, text=text, bg=self.gray, fg=color,
                                                font=self.f, command=command, anchor=tk.CENTER,
-                                               activebackground=self.gray, activeforeground=self.black)
+                                               activebackground=self.gray, activeforeground=color)
             self.runs[f"run{pos}"].grid(row=pos + 2)
         return frame
 
 
-def add_run(result, word, replay, guesses=0):
+def add_run(result, word, replay, hardmode=False, guesses=0):
     try:
         data = json.load(open("src/Text/history.json"))
     except FileNotFoundError:
@@ -75,6 +82,8 @@ def add_run(result, word, replay, guesses=0):
     runs[0]["result"] = result
     runs[0]["word"] = word
     runs[0]["replay"] = replay
+    runs[0]["hardmode"] = hardmode
+
     if guesses > 0:
         runs[0]["guesses"] = guesses
     data["runs"] = runs

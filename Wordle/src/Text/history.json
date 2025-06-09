@@ -1,8 +1,46 @@
 {
     "runs": [
-        {},
-        {},
-        {},
+        {
+            "result": "WIN",
+            "word": "POYNT",
+            "replay": [
+                "#28A645_P #28A645_O #3A3A3C_I #28A645_N #28A645_T",
+                "#28A645_P #28A645_O #28A645_Y #28A645_N #28A645_T",
+                "#3A3A3C_ #3A3A3C_ #3A3A3C_ #3A3A3C_ #3A3A3C_",
+                "#3A3A3C_ #3A3A3C_ #3A3A3C_ #3A3A3C_ #3A3A3C_",
+                "#3A3A3C_ #3A3A3C_ #3A3A3C_ #3A3A3C_ #3A3A3C_",
+                "#3A3A3C_ #3A3A3C_ #3A3A3C_ #3A3A3C_ #3A3A3C_"
+            ],
+            "guesses": 2,
+            "hardmode": false
+        },
+        {
+            "result": "LOSS",
+            "word": "GAS",
+            "replay": [
+                "#3A3A3C_B #3A3A3C_I #ECFF49_G",
+                "#3A3A3C_B #3A3A3C_O #3A3A3C_T",
+                "#3A3A3C_T #3A3A3C_O #3A3A3C_B",
+                "#3A3A3C_B #3A3A3C_I #3A3A3C_I",
+                "#3A3A3C_E #3A3A3C_E #3A3A3C_E"
+            ],
+            "max_guesses": 5,
+            "hardmode": true
+        },
+        {
+            "result": "LOSS",
+            "word": "REEVE",
+            "replay": [
+                "#3A3A3C_P #3A3A3C_O #3A3A3C_I #3A3A3C_S #28A645_E",
+                "#3A3A3C_T #3A3A3C_Y #ECFF49_R #3A3A3C_A #3A3A3C_N",
+                "#3A3A3C_P #3A3A3C_O #3A3A3C_I #3A3A3C_S #28A645_E",
+                "#3A3A3C_B #ECFF49_R #28A645_E #3A3A3C_A #3A3A3C_D",
+                "#3A3A3C_D #ECFF49_R #28A645_E #3A3A3C_A #3A3A3C_M",
+                "#3A3A3C_B #28A645_E #3A3A3C_A #ECFF49_R #3A3A3C_D"
+            ],
+            "max_guesses": 6,
+            "hardmode": false
+        },
         {},
         {},
         {},
