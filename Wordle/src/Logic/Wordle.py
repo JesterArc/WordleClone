@@ -24,7 +24,6 @@ class Wordle:
         self.hardMode = hardmode
         self.answerRequirement = ['' for _ in range(length)]
         self.requiredLetters = set()
-        print(self.secretWord)
 
     def chooseRandomWord(self):
         return r.choice(self.wordList)
@@ -70,8 +69,6 @@ class Wordle:
             else:
                 rating.append((Rating.WRONG, guess[pos]))
         self.guessCounter += 1
-        print(self.answerRequirement)
-        print(self.requiredLetters)
         return rating
 
 
